@@ -1,7 +1,6 @@
 ﻿namespace Application.Dto;
 
-public record StudentCreationResponse(
-    string name,
+public record DepartmentDataResponse(
     long departmentId,
     string departmentName
 ) { }

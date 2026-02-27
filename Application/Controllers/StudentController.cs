@@ -31,7 +31,7 @@ public class StudentController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddStudent(StudentCreationResponse response) {
+    public async Task<IActionResult> AddStudent(StudentCreationRequest response) {
 
         try {
             var result = await _studentService.AddStudent(response);
@@ -44,7 +44,7 @@ public class StudentController : ControllerBase {
     }
 
     [HttpPut]
-    public async Task<IActionResult> EditStudent(StudentEditResponse response) {
+    public async Task<IActionResult> EditStudent(StudentEditRequest response) {
         try {
             var result = await _studentService.EditStudent(response);
             return Ok(result);

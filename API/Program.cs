@@ -15,13 +15,14 @@ builder.Services.AddControllers()
             System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
+
 builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<DepartmentServices>();
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
 
 app.MapControllers();
 

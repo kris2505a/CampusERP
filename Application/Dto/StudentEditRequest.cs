@@ -1,6 +1,6 @@
 ﻿namespace Application.Dto;
 
-public record StudentEditResponse(
+public record StudentEditRequest(
     long registerNumber,
     string name,
     float gpa,

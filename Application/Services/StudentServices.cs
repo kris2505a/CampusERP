@@ -2,9 +2,7 @@
 using Application.Dto;
 using Domain.Entity;
 using Infrastructure;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 
 namespace Application.Services;
 
@@ -36,17 +34,17 @@ public class StudentService {
             ).FirstOrDefaultAsync();
     }  
 
-    public async Task<StudentDataResponse?> AddStudent(StudentCreationResponse response) {
+    public async Task<StudentDataResponse?> AddStudent(StudentCreationRequest request) {
 
-        var department = await _context.Departments.FindAsync(response.departmentId);
+        var department = await _context.Departments.FindAsync(request.departmentId);
 
         if(department == null) {
             throw new KeyNotFoundException("Department not found");
         }
 
         var student = new Student {
-            Name = response.name,
-            DepartmentId = response.departmentId,
+            Name = request.name,
+            DepartmentId = request.departmentId,
             Department = department
         };
         _context.Students.Add(student);
@@ -61,16 +59,16 @@ public class StudentService {
         );
     }
 
-    public async Task<StudentDataResponse?> EditStudent(StudentEditResponse response) {
-        var student = await _context.Students.FindAsync(response.registerNumber) ??
+    public async Task<StudentDataResponse?> EditStudent(StudentEditRequest request) {
+        var student = await _context.Students.FindAsync(request.registerNumber) ??
             throw new KeyNotFoundException("Student not found");
         
-        var department = await _context.Departments.FindAsync(response.departmentId) ??
+        var department = await _context.Departments.FindAsync(request.departmentId) ??
             throw new KeyNotFoundException("Department not found");
 
-        student.Name = response.name;
-        student.Gpa = response.gpa;
-        student.DepartmentId = response.departmentId;
+        student.Name = request.name;
+        student.Gpa = request.gpa;
+        student.DepartmentId = request.departmentId;
         student.Department = department;
 
         await _context.SaveChangesAsync();
