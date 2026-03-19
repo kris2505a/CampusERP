@@ -15,14 +15,14 @@ public class StudentService {
 
     public async Task<List<StudentDataResponse>> GetAllStudents() {
 
-        return await _context.Students
+        return await _context.Set<Student>()
             .Include(s => s.Department)
             .Select(s => new StudentDataResponse(s.RegisterNumber, s.Name, s.Gpa, s.Department.Name))
             .ToListAsync();
     }
 
     public async Task<StudentDataResponse?> GetStudentByRegNum(long regNum) {
-        return await _context.Students
+        return await _context.Set<Student>()
             .Where(s => s.RegisterNumber == regNum)
             .Select(
                 s => new StudentDataResponse(
@@ -42,12 +42,18 @@ public class StudentService {
             throw new KeyNotFoundException("Department not found");
         }
 
+        var last = await _context.Set<Student>()
+            .OrderByDescending(s => s.RegisterNumber)
+            .Select(s => s.RegisterNumber)
+            .FirstOrDefaultAsync();
+
         var student = new Student {
+            RegisterNumber = last + 1,
             Name = request.name,
             DepartmentId = request.departmentId,
             Department = department
         };
-        _context.Students.Add(student);
+        _context.Set<Student>().Add(student);
 
         await _context.SaveChangesAsync();
 
@@ -60,7 +66,7 @@ public class StudentService {
     }
 
     public async Task<StudentDataResponse?> EditStudent(StudentEditRequest request) {
-        var student = await _context.Students.FindAsync(request.registerNumber) ??
+        var student = await _context.Set<Student>().FindAsync(request.registerNumber) ??
             throw new KeyNotFoundException("Student not found");
         
         var department = await _context.Departments.FindAsync(request.departmentId) ??
@@ -82,12 +88,12 @@ public class StudentService {
     }
     
     public async Task<bool> DeleteStudent(long registerNumber) {
-        var student = await _context.Students.FindAsync(registerNumber);
+        var student = await _context.Set<Student>().FirstOrDefaultAsync(s => s.RegisterNumber == registerNumber);
 
         if (student is null)
             return false;
 
-        _context.Students.Remove(student);
+        _context.Set<Student>().Remove(student);
         await _context.SaveChangesAsync();
         return true; 
     }

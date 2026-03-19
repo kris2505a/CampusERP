@@ -1,5 +1,6 @@
 ﻿using Application.Dto;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers;
@@ -31,6 +32,7 @@ public class StudentController : ControllerBase {
     }
 
     [HttpPost]
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddStudent(StudentCreationRequest response) {
 
         try {

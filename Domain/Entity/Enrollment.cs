@@ -4,7 +4,7 @@ public class Enrollment {
     public long Id { get; set; }
 
     
-    public long StudentId { get; set; }
+    public Guid StudentId { get; set; }
     public long SubjectCode { get; set; }
 
     public Student Student { get; set; } = null!;

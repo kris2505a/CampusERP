@@ -7,5 +7,5 @@ public class Department {
     [Required]
     [MinLength(20)]
     public string Name { get; set; } = string.Empty;
-    public ICollection<Student> Students { get; set; } = new List<Student>();
+    public ICollection<Member> Members { get; set; } = new List<Member>();
 }

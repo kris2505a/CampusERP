@@ -7,7 +7,7 @@ public class ApplicationDbContext : DbContext {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<Student>      Students { get; set; }
+    public DbSet<Member>       Members { get; set; }
     public DbSet<Department>   Departments { get; set; }
     public DbSet<Subject>      Subjects { get; set; }
     public DbSet<Enrollment>   Enrollments { get; set; }
@@ -16,22 +16,26 @@ public class ApplicationDbContext : DbContext {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Student>()
-            .HasOne(s => s.Department)
-            .WithMany(d => d.Students)
-            .HasForeignKey(s => s.DepartmentId);
+        modelBuilder.Entity<Member>()
+            .HasDiscriminator<string>("MemberType")
+            .HasValue<Student>("Student");
 
-        modelBuilder.Entity<Student>()
-            .HasOne(s => s.User)
+        modelBuilder.Entity<Member>()
+            .HasOne(m => m.Department)
+            .WithMany(d => d.Members)
+            .HasForeignKey(m => m.DepartmentId);
+
+        modelBuilder.Entity<Member>()
+            .HasOne(m => m.User)
             .WithMany()
-            .HasForeignKey(s => s.UserId);
-        
-        modelBuilder.Entity<Student>()
-            .HasIndex(s => s.UserId)
+            .HasForeignKey(m => m.UserId);
+
+        modelBuilder.Entity<Member>()
+            .HasIndex(m => m.UserId)
             .IsUnique();
 
-        modelBuilder.Entity<Student>()
-            .HasIndex(s => s.Id)
+        modelBuilder.Entity<Member>()
+            .HasIndex(m => m.Id)
             .IsUnique();
 
         modelBuilder.Entity<Enrollment>()

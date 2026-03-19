@@ -1,7 +1,7 @@
 using Application.Services;
-using Domain.Entity;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +19,22 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<DepartmentServices>();
 builder.Services.AddScoped<AuthServices>();
+builder.Services.AddScoped<TokenService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
+builder.Services.AddJwtAuth(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
