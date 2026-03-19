@@ -3,14 +3,16 @@ using Application.Dto;
 using Domain.Entity;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace Application.Services;
 
 
 public class StudentService {
 
-    public StudentService(ApplicationDbContext context) {
+    public StudentService(ApplicationDbContext context, ICurrentUserService current) {
         _context = context;
+        _current = current;
     }
 
     public async Task<List<StudentDataResponse>> GetAllStudents() {
@@ -90,7 +92,7 @@ public class StudentService {
     public async Task<bool> DeleteStudent(long registerNumber) {
         var student = await _context.Set<Student>().FirstOrDefaultAsync(s => s.RegisterNumber == registerNumber);
 
-        if (student is null)
+        if (student == null)
             return false;
 
         _context.Set<Student>().Remove(student);
@@ -98,5 +100,23 @@ public class StudentService {
         return true; 
     }
 
+    public async Task<StudentDataResponse?> GetCurrentStudent() {
+        var userId = _current.UserId;
+        var student = await _context.Set<Student>()
+                        .Include(s => s.Department)
+                        .FirstOrDefaultAsync(s => s.UserId == userId);
+
+        if (student == null) {
+            throw new Exception("Student Not found!");
+        }
+        return new StudentDataResponse(
+            student.RegisterNumber,
+            student.Name,
+            student.Gpa,
+            student.Department.Name
+        );
+    }
+
     private readonly ApplicationDbContext _context;
+    private readonly ICurrentUserService _current;
 }

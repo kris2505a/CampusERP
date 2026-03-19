@@ -31,14 +31,13 @@ public class AuthController : ControllerBase {
     }
 
     [Authorize]
-    [HttpGet("me")]
-    public IActionResult Me()
+    [HttpGet("student/me")]
+    public async Task<IActionResult> Me()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var role = User.FindFirst(ClaimTypes.Role)?.Value;
-
-        return Ok(new {userId, role});
+        return Ok(await _authService.CurrentStudentData());
     }
+
+    
 
     private readonly AuthServices _authService;
 }

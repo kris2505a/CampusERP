@@ -86,6 +86,10 @@ public class AuthServices {
 
     }
 
+    public async Task<StudentDataResponse?> CurrentStudentData() {
+        return await _studentService.GetCurrentStudent();
+    }
+
 
     private ApplicationDbContext _context;
     private StudentService _studentService;

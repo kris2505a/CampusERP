@@ -9,17 +9,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlite(builder.Configuration.GetConnectionString("Default"))
 );
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options => {
-        options.JsonSerializerOptions.ReferenceHandler =
-            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    });
-
 
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<DepartmentServices>();
 builder.Services.AddScoped<AuthServices>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => {
