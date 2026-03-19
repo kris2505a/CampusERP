@@ -18,6 +18,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<DepartmentServices>();
+builder.Services.AddScoped<AuthServices>();
 
 builder.Services.AddControllers();
 
